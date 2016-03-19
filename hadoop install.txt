@@ -1,6 +1,6 @@
 先用putty登入到linux
 
-cd /tmp
+在putty下 cd /tmp
 
 ###確定ip資訊
 –ifconfig
