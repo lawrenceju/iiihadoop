@@ -43,20 +43,26 @@ cd /usr/java/java
 setenforce 0
 
 •永久停止selinux安全性
-vi /etc/selinux/config SELINUX=disabled
+vi /etc/selinux/config
+SELINUX=disabled
 
 •停止防火牆
-service iptables stop chkconfig iptables off
+service iptables stop
+chkconfig iptables off
 
 •設定SSH登入免詢問
-vi /etc/ssh/ssh_config StrictHostKeyChecking no service sshd restart
-
+vi /etc/ssh/ssh_config
+StrictHostKeyChecking no
+service sshd restart
 
 設定主機資訊(以自己的為主)
-vi /etc/hosts 192.168.31.129 master
+vi /etc/hosts
+192.168.31.129 master
 
 •產生 keygen
-ssh-keygen -t rsa -f ~/.ssh/id_rsa -P "" cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys ssh localhost
+ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ""
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+ssh localhost
 
 ###測試不用password就能登入
 exit
@@ -69,22 +75,45 @@ wget "https://archive.apache.org/dist/hadoop/core/hadoop-2.2.0/hadoop-2.2.0.tar.
 
 
 ###安裝hadoop###
-–tar -zxvf /tmp/hadoop-2.2.0.tar.gz
-–mv hadoop-2.2.0 /opt
-–ln -s /opt/hadoop-2.2.0 /opt/hadoop
+tar -zxvf /tmp/hadoop-2.2.0.tar.gz
+mv hadoop-2.2.0 /opt
+ln -s /opt/hadoop-2.2.0 /opt/hadoop
 
 ###新增環境變數###
-vi /etc/profile export HADOOP_HOME=/opt/hadoop/ export HADOOP_MAPRED_HOME=$HADOOP_HOME export HADOOP_COMMON_HOME=$HADOOP_HOME export HADOOP_HDFS_HOME=$HADOOP_HOME export YARN_HOME=$HADOOP_HOME export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib" source /etc/profile
+vi /etc/profile
+export HADOOP_HOME=/opt/hadoop/ export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib"
+
+source /etc/profile
 
 
 ###新增環境變數(續)###
-vi /opt/hadoop/libexec/hadoop-config.sh export JAVA_HOME=/usr/java/java
-vi /opt/hadoop/etc/hadoop/hadoop-env.sh export JAVA_HOME=/usr/java/java export HADOOP_HOME=/opt/hadoop export PATH=$PATH:$HADOOP_HOME/bin export PATH=$PATH:$HADOOP_HOME/sbin export HADOOP_MAPRED_HOME=$HADOOP_HOME export HADOOP_COMMON_HOME=$HADOOP_HOME export HADOOP_HDFS_HOME=$HADOOP_HOME export YARN_HOME=$HADOOP_HOME export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
+vi /opt/hadoop/libexec/hadoop-config.sh
+export JAVA_HOME=/usr/java/java
+
+vi /opt/hadoop/etc/hadoop/hadoop-env.sh
+export JAVA_HOME=/usr/java/java
+export HADOOP_HOME=/opt/hadoop
+export PATH=$PATH:$HADOOP_HOME/bin
+export PATH=$PATH:$HADOOP_HOME/sbin
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
 
 
 ###mapred-site.xml####裡面有都用DD把他刪掉
 •將mapred-site.xml.template 更名成mapred-site.xml
-–vi /opt/hadoop/etc/hadoop/mapred-site.xml
+vi /opt/hadoop/etc/hadoop/mapred-site.xml
 <configuration>
 <property>
 <name>mapreduce.framework.name</name>
@@ -95,13 +124,22 @@ vi /opt/hadoop/etc/hadoop/hadoop-env.sh export JAVA_HOME=/usr/java/java export H
 
 ###core-site.xml###
 •修改 core-site.xml內容
-–vi /opt/hadoop/etc/hadoop/core-site.xml
-<configuration> <property> <name>fs.default.name</name> <value>hdfs://192.168.31.129:9000</value> </property> <property> <name>hadoop.tmp.dir</name> <value>/opt/hadoop/tmp</value> </property> </configuration>
+vi /opt/hadoop/etc/hadoop/core-site.xml
+<configuration>
+<property>
+<name>fs.default.name</name>
+<value>hdfs://192.168.128.128:9000</value>  ##注意要打自己的IP
+</property>
+<property>
+<name>hadoop.tmp.dir</name>
+<value>/opt/hadoop/tmp</value>
+</property>
+</configuration>
 
 
 ###yarn-site.xml###
 修改 yarn-site.xml內容
-╴vi /opt/hadoop/etc/hadoop/yarn-site.xml
+vi /opt/hadoop/etc/hadoop/yarn-site.xml
 <configuration>
 <property>
 <name>yarn.nodemanager.aux-services</name>
@@ -112,8 +150,17 @@ vi /opt/hadoop/etc/hadoop/hadoop-env.sh export JAVA_HOME=/usr/java/java export H
 
 ###hdfs-site.xml###
 • 修改 hdfs-site.xml內容
-╴vi /opt/hadoop/etc/hadoop/hdfs-site.xml
-<configuration> <property> <name>dfs.replication</name> <value>1</value> </property> <property> <name>dfs.permissions</name> <value>false</value> </property> </configuration>
+vi /opt/hadoop/etc/hadoop/hdfs-site.xml
+<configuration>
+<property>
+<name>dfs.replication</name>
+<value>1</value>
+</property>
+<property>
+<name>dfs.permissions</name>
+<value>false</value>
+</property>
+</configuration>
 
 
 ###建立tmp目錄###
@@ -125,13 +172,13 @@ vi /opt/hadoop/etc/hadoop/slaves
 localhost
 
 •hdfs 格式化
-–hadoop namenode -format
+hadoop namenode -format
 
 
 ###啟用HDFS及YARN###
-–start-dfs.sh
-–start-yarn.sh
-–start-all.sh
+start-dfs.sh
+start-yarn.sh
+start-all.sh
 
 ###使用 jps 檢視 process####
 這邊應該要有6個,如果少一請重新檢查新增環境數以下的步驟
@@ -143,41 +190,42 @@ localhost
 
 ###測試將wiki上的資料下載到hadoop上###
 取得 2007年12月的pagecounts
-–wget https://dumps.wikimedia.org/other/pagecounts-raw/2007/2007-12/pagecounts-20071209-180000.gz
-–gunzip pagecounts-20071209-180000.gz
+cd /tmp
+wget https://dumps.wikimedia.org/other/pagecounts-raw/2007/2007-12/pagecounts-20071209-180000.gz
+gunzip pagecounts-20071209-180000.gz
 •手動建立一個測試檔
-–touch empty.txt
+touch empty.txt
 
 ###建立目錄
-–hadoop fs -mkdir /data
-–hadoop fs -mkdir /data1
-–hadoop fs -mkdir /data2
+hadoop fs -mkdir /data
+hadoop fs -mkdir /data1
+hadoop fs -mkdir /data2
 •將資料上傳
-–hadoop fs -put pagecounts-20071209-180000 empty.txt /data ###把兩個檔案上傳到hadoop上
+hadoop fs -put pagecounts-20071209-180000 empty.txt /data ###把兩個檔案上傳到hadoop上
 •檢視目錄/檔案
-–hadoop fs -ls /data
-–hadoop fs -lsr /
+hadoop fs -ls /data
+hadoop fs -lsr /
 
 ###檢視檔案內容
-–hadoop fs -cat /data/pagecounts-20071209-180000 | head
-–hadoop fs -tail /data/pagecounts-20071209-180000
-–hadoop fs -cat /data/pagecounts-20071209-180000 | head -n 10
-–hadoop fs -cat /data/pagecounts-20071209-180000 | tail -3
+hadoop fs -cat /data/pagecounts-20071209-180000 | head
+hadoop fs -tail /data/pagecounts-20071209-180000
+hadoop fs -cat /data/pagecounts-20071209-180000 | head -n 10
+hadoop fs -cat /data/pagecounts-20071209-180000 | tail -3
 •查看特定目錄名稱
-–hadoop fs -ls -R / | grep empty
+hadoop fs -ls -R / | grep empty
 •檢視存儲空間大小
-–hadoop fs -df (-h)
+hadoop fs -df (-h)
 •檢視特定目錄大小
-–hadoop fs -du /data
-–hadoop fs -dus /data
+hadoop fs -du /data
+hadoop fs -dus /data
 
 ###下載檔案
-–hadoop fs -get /data/pagecounts-20071209-180000 test.txt
-–du -h test.txt
+hadoop fs -get /data/pagecounts-20071209-180000 test.txt
+du -h test.txt
 •檢視hdfs檔案資訊
-–hadoop fsck /data -files -blocks -locations
-–hadoop fs -stat '%o %r' /data/pagecounts-20071209-180000
+hadoop fsck /data -files -blocks -locations
+hadoop fs -stat '%o %r' /data/pagecounts-20071209-180000
 •刪除檔案內容
-–hadoop fs -rm /data/pagecounts-20071209-180000
+hadoop fs -rm /data/pagecounts-20071209-180000
 •刪除目錄
-–hadoop fs -rm -r /data
+hadoop fs -rm -r /data
