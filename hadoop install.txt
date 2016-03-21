@@ -52,12 +52,16 @@ chkconfig iptables off
 
 •設定SSH登入免詢問
 vi /etc/ssh/ssh_config
-StrictHostKeyChecking no
+StrictHostKeyChecking no  ##修改vi內的參數,要去掉#號
+
 service sshd restart
 
 設定主機資訊(以自己的為主)
 vi /etc/hosts
 192.168.31.129 master
+192.168.31.128 slaver1
+192.168.31.130 slaver2
+192.168.31.131 slaver3
 
 •產生 keygen
 ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ""
