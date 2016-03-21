@@ -85,7 +85,8 @@ ln -s /opt/hadoop-2.2.0 /opt/hadoop
 
 ###新增環境變數###
 vi /etc/profile
-export HADOOP_HOME=/opt/hadoop/ export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_HOME=/opt/hadoop/
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
 export HADOOP_COMMON_HOME=$HADOOP_HOME
 export HADOOP_HDFS_HOME=$HADOOP_HOME
 export YARN_HOME=$HADOOP_HOME
