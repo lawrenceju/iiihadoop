@@ -20,7 +20,6 @@ ln -s /usr/java/jdk1.7.0_79/ /usr/java/java
 
 ###設定環境目錄
 vi /etc/profile
-
 ### shift+G 到最後一行,然後INSERT
 
 export JAVA_HOME=/usr/java/java 
@@ -58,10 +57,10 @@ service sshd restart
 
 設定主機資訊(以自己的為主)
 vi /etc/hosts
-192.168.31.129 master
-192.168.31.128 slaver1
-192.168.31.130 slaver2
-192.168.31.131 slaver3
+192.168.31.132 master
+192.168.31.133 slaver1
+192.168.31.134 slaver2
+192.168.31.135 slaver3
 
 •產生 keygen
 ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ""
@@ -74,7 +73,6 @@ ssh locallhost
 
 •下載 hadoop2.2###可以直接用winscp丟
 wget "https://archive.apache.org/dist/hadoop/core/hadoop-2.2.0/hadoop-2.2.0.tar.gz"
-
 
 
 
