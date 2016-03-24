@@ -114,6 +114,9 @@ export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
 export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
 
 
+##################以上是不管是master或有slaver*n都要做#####################
+
+
 ###mapred-site.xml####裡面有都用DD把他刪掉
 •將mapred-site.xml.template 更名成mapred-site.xml
 vi /opt/hadoop/etc/hadoop/mapred-site.xml
