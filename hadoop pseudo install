@@ -1,1 +1,122 @@
+先做完sandalone都要做的部分
+在vi /etc/hosts加入自己的slaver與master的ip
+vi /etc/hosts
+192.168.31.132 master
+192.168.31.133 slaver1
+192.168.31.134 slaver2
+192.168.31.135 slaver3
 
+###然後再ssh的部分要做修改,在此前請先確認master與slaver有無互通
+
+配置好后需要在各个节点上执行如下命令，测试是否相互 ping 得通，如果 ping 不通，后面就无法顺利配置成功：
+
+ping Master -c 3   # 只ping 3次，否则要按 Ctrl+c 中断
+ping Slave1 -c 3
+
+###成功的話,在繼續以下步驟
+
+把master的key傳輸給其他slaver
+
+scp ~/.ssh/id_rsa.pub roor@slaver1:~/.ssh/id_rsa.pub
+
+###之後再各slaver複寫ssh_keys
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+###在master上檢查有無成功
+ssh Slaver1
+
+###之後再設定mapred-site.xml環境變數
+vi /opt/hadoop/etc/hadoop/mapred-site.xml
+<configuration>
+        <property>
+                <name>mapreduce.framework.name</name>
+                <value>yarn</value>
+        </property>
+        <property>
+                <name>mapreduce.jobhistory.address</name>
+                <value>master:10020</value>
+        </property>
+        <property>
+                <name>mapreduce.jobhistory.webapp.address</name>
+                <value>master:19888</value>
+        </property>
+</configuration>
+
+
+###core-site.xml###
+•修改 core-site.xml內容
+vi /opt/hadoop/etc/hadoop/core-site.xml
+<configuration>
+        <property>
+                <name>fs.defaultFS</name>
+                <value>hdfs://master:9000</value>
+        </property>
+        <property>
+                <name>hadoop.tmp.dir</name>
+                <value>file:/opt/hadoop/tmp</value>
+                <description>Abase for other temporary directories.</description>
+        </property>
+</configuration>
+
+###yarn-site.xml###
+修改 yarn-site.xml內容
+vi /opt/hadoop/etc/hadoop/yarn-site.xml
+<configuration>
+        <property>
+                <name>yarn.resourcemanager.hostname</name>
+                <value>master</value>
+        </property>
+        <property>
+                <name>yarn.nodemanager.aux-services</name>
+                <value>mapreduce_shuffle</value>
+        </property>
+</configuration>
+
+###hdfs-site.xml###
+• 修改 hdfs-site.xml內容
+vi /opt/hadoop/etc/hadoop/hdfs-site.xml
+<configuration>
+        <property>
+                <name>dfs.namenode.secondary.http-address</name>
+                <value>master:50090</value>
+        </property>
+        <property>
+                <name>dfs.replication</name>
+                <value>3</value>
+        </property>
+        <property>
+                <name>dfs.namenode.name.dir</name>
+                <value>file:/opt/hadoop/tmp/dfs/name</value>
+        </property>
+        <property>
+                <name>dfs.datanode.data.dir</name>
+                <value>file:/opt/hadoop/tmp/dfs/data</value>
+        </property>
+</configuration>
+
+###之後要把master上的hadoop-2.2.0打包壓縮給其他slaver做覆蓋
+
+切換到/opt目錄:cd /opt
+tar -zcf ./hadoop.master.tar.gz ./hadoop-2.2.0
+再複製給其他slaver
+scp ./hadoop.master.tar.gz Slaver1:/opt
+在各slaver上的/opt做解壓覆蓋的動作
+tar –zxf ./hadoop.master.tar.gz
+chown –R root:root /opt/hadoop-2.2.0
+
+###驗收測試
+在master上建立一個目錄:
+mkdir -p $HADOOP_HOME/tmp
+
+接著對master主機的hadoop namenode執行格式化:
+hadoop namenode -format
+
+做完之後, 啟動hadoop master主機
+(master會自動啟動slave名單上的所有slave主機):
+start-all.sh
+
+可以用jps指令查看該主機啟動了哪些服務項目:
+jps
+
+查看 DataNode 是否正常启动，如果 Live datanodes 不为 0
+hdfs dfsadmin -report
