@@ -17,7 +17,7 @@ ping Slave1 -c 3
 
 把master的key傳輸給其他slaver
 
-scp ~/.ssh/id_rsa.pub roor@slaver1:~/.ssh/id_rsa.pub
+scp ~/.ssh/id_rsa.pub root@slaver1:~/.ssh/id_rsa.pub
 
 ###之後再各slaver複寫ssh_keys
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
@@ -99,10 +99,11 @@ vi /opt/hadoop/etc/hadoop/hdfs-site.xml
 切換到/opt目錄:cd /opt
 tar -zcf ./hadoop.master.tar.gz ./hadoop-2.2.0
 再複製給其他slaver
-scp ./hadoop.master.tar.gz Slaver1:/opt
+scp ./hadoop.master.tar.gz slave1:/opt
+
 在各slaver上的/opt做解壓覆蓋的動作
-tar –zxf ./hadoop.master.tar.gz
-chown –R root:root /opt/hadoop-2.2.0
+tar -zxf ./hadoop.master.tar.gz
+chown -R root:root /opt/hadoop-2.2.0
 
 ###驗收測試
 在master上建立一個目錄:
