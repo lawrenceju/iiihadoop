@@ -103,6 +103,7 @@ scp ./hadoop.master.tar.gz slave1:/opt
 
 在各slaver上的/opt做解壓覆蓋的動作
 tar -zxf ./hadoop.master.tar.gz
+ln -s /opt/hadoop-2.2.0 /opt/hadoop
 chown -R root:root /opt/hadoop-2.2.0
 
 ###驗收測試
