@@ -62,6 +62,9 @@ vi /etc/hosts
 192.168.31.134 slaver2
 192.168.31.135 slaver3
 
+vi /etc/sysconfig/network
+HOSTNAME=master
+
 •產生 keygen
 ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ""
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
