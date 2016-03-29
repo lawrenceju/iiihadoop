@@ -16,19 +16,13 @@ rpm -ivh jdk-7u79-linux-x64.rpm
 ###建立軟連結
 ln -s /usr/java/jdk1.7.0_79/ /usr/java/java
 
-scp /etc/profile root@slaver1:/etc/profile
-source /etc/profile
-
-在vi /etc/hosts加入自己的slaver與master的ip
+###然後再ssh的部分要做修改,在此前請先確認master與slaver有無互通
+在master執行 vi /etc/hosts加入自己的slaver的ip
 vi /etc/hosts
 192.168.31.132 master
 192.168.31.133 slaver1
 192.168.31.134 slaver2
 192.168.31.135 slaver3
-
-scp /etc/hosts root@slaver1:/etc/hosts
-
-###然後再ssh的部分要做修改,在此前請先確認master與slaver有無互通
 
 配置好后需要在各个节点上执行如下命令，测试是否相互 ping 得通，如果 ping 不通，后面就无法顺利配置成功：
 
@@ -46,6 +40,30 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 ###在master上檢查有無成功
 ssh Slaver1
+
+scp /etc/hosts root@slaver1:/etc/hosts
+scp /etc/profile root@slaver1:/etc/profile
+source /etc/profile
+
+
+###打開所有PORT###
+設定安全性
+setenforce 0
+
+•永久停止selinux安全性
+vi /etc/selinux/config
+SELINUX=disabled
+
+•停止防火牆
+service iptables stop
+chkconfig iptables off
+
+•設定SSH登入免詢問
+vi /etc/ssh/ssh_config
+StrictHostKeyChecking no  ##修改vi內的參數,要去掉#號
+
+service sshd restart
+
 
 ###之後再設定mapred-site.xml環境變數
 vi /opt/hadoop/etc/hadoop/mapred-site.xml
