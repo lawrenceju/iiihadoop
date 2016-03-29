@@ -1,10 +1,32 @@
-先做完sandalone都要做的部分
+在putty下 cd /tmp
+
+###確定ip資訊
+ifconfig
+
+
+###下載jdk
+wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-x64.rpm
+
+find / -name jdk-7u*  ###確認有無下載
+
+
+###安裝jdk (建議使用 Oracle java)
+rpm -ivh jdk-7u79-linux-x64.rpm
+
+###建立軟連結
+ln -s /usr/java/jdk1.7.0_79/ /usr/java/java
+
+scp /etc/profile root@slaver1:/etc/profile
+source /etc/profile
+
 在vi /etc/hosts加入自己的slaver與master的ip
 vi /etc/hosts
 192.168.31.132 master
 192.168.31.133 slaver1
 192.168.31.134 slaver2
 192.168.31.135 slaver3
+
+scp /etc/hosts root@slaver1:/etc/hosts
 
 ###然後再ssh的部分要做修改,在此前請先確認master與slaver有無互通
 
