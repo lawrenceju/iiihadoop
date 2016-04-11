@@ -72,7 +72,7 @@ ssh localhost
 
 ###測試不用password就能登入
 exit
-ssh locallhost
+ssh localhost
 
 •下載 hadoop2.2###可以直接用winscp丟
 wget "https://archive.apache.org/dist/hadoop/core/hadoop-2.2.0/hadoop-2.2.0.tar.gz"
